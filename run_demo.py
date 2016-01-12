@@ -61,7 +61,7 @@ def main():
     print "You have to specify the number of employed annotations."
     exit()
   
-  DecoupledNet_inference(config);
+  DecoupledNet_inference(config)
 
 if __name__ == '__main__':
   main()
