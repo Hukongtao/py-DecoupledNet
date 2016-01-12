@@ -31,7 +31,7 @@ def DecoupledNet_inference(config):
   
   ## initialize paths
   save_res_dir = path_join(config['save_root'], config['model_name'])
-  save_res_path = path_join(save_res_dir, '%s.png')
+  save_res_path = path_join(save_res_dir, '{}.png')
   
   ## create directory
   if config['write_file']:
@@ -42,7 +42,7 @@ def DecoupledNet_inference(config):
   log('caffe weight: {}'.format(config['Path.CNN.model_data']))
   
   ## read VOC2012 TEST image set
-  ids = textread(VOCopts['seg.imgsetpath'] % config['imageset'])
+  ids = textread(VOCopts['seg.imgsetpath'].format(config['imageset']))
 
   for i in range(1):
   #for i in range(len(ids)):
@@ -50,7 +50,7 @@ def DecoupledNet_inference(config):
     start = time.clock()
       
     # read image
-    I = img_as_ubyte(imread(VOCopts['imgpath'] % ids[i])) # TODO does load correctly?
+    I = img_as_ubyte(imread(VOCopts['imgpath'].format(ids[i]))) # TODO does load correctly?
       
     im_sz = max(I.shape[0], I.shape[1])
     offset = ((0, im_sz-I.shape[0]), (0, im_sz-I.shape[1]), (0, 0))
@@ -106,7 +106,7 @@ def DecoupledNet_inference(config):
     segmask = np.argmax(cropped_score_map, axis=2)
                   
     if config['write_file']:
-      imsave(save_res_path % ids[i], label2rgb(segmask, colors=cmap))
+      imsave(save_res_path.format(ids[i]), label2rgb(segmask, colors=cmap))
 
     end = time.clock()
     print str(end - start) + " s"
