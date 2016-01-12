@@ -9,6 +9,7 @@ import scipy.io
 import numpy as np
 
 from skimage.io import imread, imsave
+from skimage.color import label2rgb
 from skimage import img_as_ubyte
 
 from util.preprocess_image import *
@@ -17,17 +18,17 @@ from util.init_VOC2012_TEST import *
 
 def DecoupledNet_inference(config):
   ## start DecoupledNet inference
-  log('start DecoupledNet inference [{}]'.format(config['model_name']))
+  log('Start of DecoupledNet inference [{}]'.format(config['model_name']))
   
   ## initialization
   cmap = scipy.io.loadmat(config['cmap'])['cmap']
   
   ## initialize caffe
-  log('initializing caffe..')
+  log('Initializing caffe')
   caffe.set_mode_gpu()
   caffe.set_device(config['gpuNum'])
   net = caffe.Net(config['Path.CNN.model_proto'], config['Path.CNN.model_data'], caffe.TEST)
-  log('done')
+  log('Initialization of caffe complete')
   
   ## initialize paths
   save_res_dir = path_join(config['save_root'], config['model_name'])
@@ -37,16 +38,15 @@ def DecoupledNet_inference(config):
   if config['write_file']:
     create_dir(save_res_dir)
   
-  log('start generating result')
-  log('caffe model: {}'.format(config['Path.CNN.model_proto']))
-  log('caffe weight: {}'.format(config['Path.CNN.model_data']))
+  log('Start generating result')
+  log('Caffe model: {}'.format(config['Path.CNN.model_proto']))
+  log('Caffe weight: {}'.format(config['Path.CNN.model_data']))
   
   ## read VOC2012 TEST image set
   ids = textread(VOCopts['seg.imgsetpath'].format(config['imageset']))
 
-  for i in range(1):
-  #for i in range(len(ids)):
-    log_inline('progress: {}/{} [{}]...'.format(i, len(ids), ids[i]))
+  for i in range(len(ids)):
+    log_inline('{}/{} [{}]... '.format(i, len(ids), ids[i]))
     start = time.clock()
       
     # read image
@@ -108,9 +108,7 @@ def DecoupledNet_inference(config):
     if config['write_file']:
       imsave(save_res_path.format(ids[i]), label2rgb(segmask, colors=cmap))
 
-    end = time.clock()
-    print str(end - start) + " s"
-    log(' done')
+    log_basic('{}s\n'.format(time.clock() - start))
 
 def softmax(seg_score):
   softmax_score = np.exp(seg_score - np.amax(seg_score, axis=2)[:,:,None])

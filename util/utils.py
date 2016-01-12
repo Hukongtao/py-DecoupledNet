@@ -18,17 +18,22 @@ def newline_decorate(func):
     return func(text)
   return func_adder
 
+def log_str_decorate(func):
+  def func_adder(text):
+    text = 'LOG: ' + text
+    return func(text)
+  return func_adder
+
+def log_basic(*msg):
+  print(*msg, end='', file=sys.stderr)
+
+@log_str_decorate
 def log_inline(*msg):
-  print("LOG: ", *msg, end='', file=sys.stderr)
+  log_basic(*msg)
 
 @newline_decorate
 def log(*msg):
   log_inline(*msg)
-
-def print_new_line(*msg):
-  def func_wrapper(name):
-    print('', file=sys.stderr)
-  return func_wrapper
 
 def path_join(*path):
   return os.path.join(*path)
