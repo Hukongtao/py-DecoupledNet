@@ -7,7 +7,7 @@ from DecoupledNet_inference import DecoupledNet_inference
 
 def main():
   # 'Full', '25', '10', '5'
-  annotations = '5'
+  annotations = 'Full'
   
   config = {}
   config['imageset'] = 'test'
@@ -20,6 +20,7 @@ def main():
   config['write_file'] = 1
   config['thres'] = 0.5
   config['im_sz'] = 320
+  config['num_classes'] = 20
 
   if annotations == 'Full':
     ## DecoupledNet Full annotations
@@ -45,7 +46,7 @@ def main():
     config['Path.CNN.script_path'] = './DecoupledNet_10_anno'
     config['Path.CNN.model_data'] = path_join(config['Path.CNN.script_path'], 
                                     'DecoupledNet_10_anno_inference.caffemodel')
-    config['Path.CNN.model_proto'] = path.join(config['Path.CNN.script_path'], 
+    config['Path.CNN.model_proto'] = path_join(config['Path.CNN.script_path'], 
                                      'DecoupledNet_10_anno_inference_deploy.prototxt')
     
   elif annotations == '5':
